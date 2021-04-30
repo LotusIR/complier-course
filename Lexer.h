@@ -138,8 +138,9 @@ struct Lexer
             for (auto &ch : text)
                 ch = tolower(ch);
         }
-        else if (isdigit(s[it]))
+        else if ( (s[it] == '-' && isdigit(s[it+1]) ) || isdigit(s[it]))
         {
+            if (s[it] == '-') text += s[it++];
             while (it < s.length() && isdigit(s[it]))
             {
                 text += s[it++];
@@ -210,7 +211,7 @@ struct Lexer
         std::string str;
         bool ok = true;
         int line = 0;
-        while (getline(ifs, str))
+        while (ok && getline(ifs, str))
             ok &= getTokens(str, tokens, ofs, ++line);
         if (ok) {
             // for (auto &t : tokens)
