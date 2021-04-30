@@ -3,7 +3,6 @@
 using namespace std;
 
 Lexer lexer;
-vector<token> tokens;
 
 int main()
 {

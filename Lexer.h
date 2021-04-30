@@ -188,13 +188,13 @@ struct Lexer
             if (isIdent) tokens.push_back(token(text,token_type::ident));
             else {
                 ofs << "\n";
-                for (int i = 0; i < s.length()+50; ++i) ofs << "*";
+                for (int i = 0; i < s.length()+50; ++i) ofs << (i==0||i==s.length()+49?"+":"-");
                 ofs << "\n\n";
                 ofs << "Fatal error in:\n\t" << "line " << line << ": \"" << s << "\"\n";
                 ofs << "Error type:\n\t";
                 ofs << "Undefined symbol -> " << text << " (" << "line:" << line << ":" << it-text.length() << ") \n";
                 ofs << "\n";
-                for (int i = 0; i < s.length()+50; ++i) ofs << "*";
+                for (int i = 0; i < s.length()+50; ++i) ofs << (i==0||i==s.length()+49?"+":"-");
                 ofs << "\n\n";
                 return false;
             }

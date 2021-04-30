@@ -1,1 +1,1 @@
-begin_
+begin: var a b c d e f g#100, hello, end.
