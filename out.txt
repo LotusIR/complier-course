@@ -1,12 +1,7 @@
-(beginsym, begin)
-
-+-----------------------------------------------------------------------------------------+
-
-Fatal error in:
-	line 1: "begin: var a b c d e f g#100, hello, end."
-Error type:
-	Undefined symbol -> : (line:1:5) 
-
-+-----------------------------------------------------------------------------------------+
-
-Analyze failed
+(ident, a)
+(eql, =)
+(number, -6)
+(ident, a)
+(minus, -)
+(number, 6)
+Analyze success

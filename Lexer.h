@@ -138,9 +138,15 @@ struct Lexer
             for (auto &ch : text)
                 ch = tolower(ch);
         }
-        else if ( (s[it] == '-' && isdigit(s[it+1]) ) || isdigit(s[it]))
+        else if (tokens.back().type != ident && tokens.back().type != number && s[it] == '-' && isdigit(s[it+1]) ) {
+            text += s[it++];
+            while (it < s.length() && isdigit(s[it]))
+            {
+                text += s[it++];
+            }
+        }
+        else if (isdigit(s[it]))
         {
-            if (s[it] == '-') text += s[it++];
             while (it < s.length() && isdigit(s[it]))
             {
                 text += s[it++];
@@ -166,19 +172,8 @@ struct Lexer
         if (type.count(text)) {
             tokens.push_back(token(text,type[text]));
         }
-        else if (isdigit(text[0])){
-            bool isNumber = true;
-            for (auto& ch: text) {
-                if (!isdigit(ch)) {
-                    isNumber = false;
-                    break;
-                }
-            }
-            if (isNumber) tokens.push_back(token(text,token_type::number));
-            else {
-                std::cout << "Undefined symbol -> " << text << '\n';
-                return false;
-            }
+        else if (isdigit(text[0]) || (text.length() > 1 && text[0] == '-' && isdigit(text[1]))) {
+            tokens.push_back(token(text,token_type::number));
         }
         else {
             bool isIdent = true;
