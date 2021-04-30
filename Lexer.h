@@ -163,7 +163,10 @@ struct Lexer
         else if (isdigit(text[0])){
             bool isNumber = true;
             for (auto& ch: text) {
-                if (!isdigit(ch)) isNumber = false;
+                if (!isdigit(ch)) {
+                    isNumber = false;
+                    break;
+                }
             }
             if (isNumber) tokens.push_back(token(text,token_type::number));
             else {
