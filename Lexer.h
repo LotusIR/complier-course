@@ -124,9 +124,9 @@ struct Lexer
         if (it == s.length())
             return true;
         std::string text;
-        if (isalpha(s[it]))
+        if (isalpha(s[it]) || s[it] == '_')
         {
-            while (it < s.length() && (isalpha(s[it]) || isdigit(s[it])))
+            while (it < s.length() && (isalpha(s[it]) || isdigit(s[it]) || s[it] == '_'))
             {
                 text += s[it++];
             }
