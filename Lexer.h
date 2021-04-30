@@ -173,8 +173,9 @@ struct Lexer
         }
         else {
             bool isIdent = true;
-            for (auto& ch:text) {
-                if (ch != '_' && !isalpha(ch)) isIdent = false;
+            if (text[0] != '_' && !isalpha(text[0])) isIdent = false;
+            for (int i = 1; i < text.length() && isIdent; ++i) { 
+                if (text[i] != '_' && !isalpha(text[i]) && !isdigit(text[i])) isIdent = false;
             }
             if (isIdent) tokens.push_back(token(text,token_type::ident));
             else {
