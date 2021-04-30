@@ -1,6 +1,7 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <iostream>
 
 const std::string ty[] = {"beginsym",
                    "callsym",
@@ -163,7 +164,15 @@ struct Lexer
             tokens.push_back(token(text,token_type::number));
         }
         else {
-            tokens.push_back(token(text,token_type::ident));
+            bool isIdent = true;
+            for (auto& ch:text) {
+                if (ch != '_' && !isalpha(ch)) isIdent = false;
+            }
+            if (isIdent) tokens.push_back(token(text,token_type::ident));
+            else {
+                std::cout << "Undefined symbol -> " << text << '\n';
+                return;
+            }
         }
         if (it != s.length())
             getTokens(s, tokens, it);
