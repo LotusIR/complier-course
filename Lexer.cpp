@@ -11,13 +11,19 @@ int main()
     ofstream ofs("out.txt");
     lexer.init();
     string str;
+    bool ok = true;
     while (getline(ifs, str))
-        lexer.getTokens(str, tokens);
-    for (auto &t : tokens)
-    {
-        ofs << "(" << ty[t.type] << ", " << t.text << ")" << endl;
+        ok &= lexer.getTokens(str, tokens);
+    if (ok) {
+        for (auto &t : tokens)
+        {
+            ofs << "(" << ty[t.type] << ", " << t.text << ")" << endl;
+        }
     }
-    cout << "cleared\n";
+    else {
+        cout << "Analyze failed\n";
+    }
+    cout << "Cleared\n";
 }
 
 /*

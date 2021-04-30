@@ -117,12 +117,12 @@ struct Lexer
 
     std::vector<token> tokens;
 
-    void getTokens(std::string &s, std::vector<token> &tokens, int it = 0)
+    bool getTokens(std::string &s, std::vector<token> &tokens, int it = 0)
     {
         while (it < s.length() && (s[it] == ' ' || s[it] == '\t') )
             ++it;
         if (it == s.length())
-            return;
+            return true;
         std::string text;
         if (isalpha(s[it]))
         {
@@ -161,7 +161,15 @@ struct Lexer
             tokens.push_back(token(text,type[text]));
         }
         else if (isdigit(text[0])){
-            tokens.push_back(token(text,token_type::number));
+            bool isNumber = true;
+            for (auto& ch: text) {
+                if (!isdigit(ch)) isNumber = false;
+            }
+            if (isNumber) tokens.push_back(token(text,token_type::number));
+            else {
+                std::cout << "Undefined symbol -> " << text << '\n';
+                return false;
+            }
         }
         else {
             bool isIdent = true;
@@ -171,10 +179,11 @@ struct Lexer
             if (isIdent) tokens.push_back(token(text,token_type::ident));
             else {
                 std::cout << "Undefined symbol -> " << text << '\n';
-                return;
+                return false;
             }
         }
         if (it != s.length())
-            getTokens(s, tokens, it);
+            return getTokens(s, tokens, it);
+        else return true;
     }
 };
