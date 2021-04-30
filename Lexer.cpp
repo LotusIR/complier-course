@@ -1,14 +1,9 @@
 #include <bits/stdc++.h>
 #include "Lexer.h"
 using namespace std;
-
-Lexer lexer;
-
 int main()
 {
-    ifstream ifs("in.txt");
-    ofstream ofs("out.txt");
-    if (lexer.run(ifs,ofs)) cout << "Cleared!\n";
+    if (Lexer::analyze("in.txt")) cout << "Cleared!\n";
     else cout << "Error!\n";
 }
 

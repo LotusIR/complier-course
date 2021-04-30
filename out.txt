@@ -1,7 +1,0 @@
-(ident, a)
-(eql, =)
-(number, -6)
-(ident, a)
-(minus, -)
-(number, 6)
-Analyze success

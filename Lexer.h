@@ -3,6 +3,7 @@
 #include <unordered_map>
 #include <iostream>
 #include <fstream>
+#include <memory>
 
 const std::string ty[] = {"beginsym",
                    "callsym",
@@ -78,16 +79,19 @@ struct token
     token(std::string _text,token_type _type) : text(_text),type(_type) {}
     token() {}
 };
-
-struct Lexer
+class Lexer
 {
+private:
+
+    static std::shared_ptr<Lexer> lexer;
+
     std::unordered_map<std::string, token_type> type;
 
     Lexer() {
-        init();
+        _init();
     }
-
-    void init()
+    
+    void _init()
     {
         type["begin"] = beginsym;
         type["call"] = callsym;
@@ -120,9 +124,7 @@ struct Lexer
         type["."] = period;
     }
 
-    std::vector<token> tokens;
-
-    bool getTokens(std::string &s, std::vector<token> &tokens, std::ofstream &ofs,int line,int it = 0)
+    bool _getTokens(std::string &s, std::vector<token> &tokens, std::ofstream &ofs,int line,int it = 0)
     {
         while (it < s.length() && (s[it] == ' ' || s[it] == '\t') )
             ++it;
@@ -197,17 +199,17 @@ struct Lexer
         }
         ofs << "(" << ty[tokens.back().type] << ", " << tokens.back().text << ")" << std::endl;
         if (it != s.length())
-            return getTokens(s, tokens, ofs, line, it);
+            return _getTokens(s, tokens, ofs, line, it);
         else return true;
     }
 
-    bool run(std::ifstream &ifs,std::ofstream &ofs) {
+    bool _work(std::ifstream &ifs,std::ofstream &ofs) {
         std::vector<token> tokens;
         std::string str;
         bool ok = true;
         int line = 0;
         while (ok && getline(ifs, str))
-            ok &= getTokens(str, tokens, ofs, ++line);
+            ok &= _getTokens(str, tokens, ofs, ++line);
         if (ok) {
             // for (auto &t : tokens)
             // {
@@ -220,4 +222,23 @@ struct Lexer
         }
         return ok;
     }
+
+public:
+    static bool analyze(std::string input_file) {
+        std::string output_file;
+        for (auto& ch:input_file) {
+            if (ch != '.') output_file += ch;
+            else break;
+        }
+        return analyze(input_file,output_file+"_out.txt");
+    }
+
+    static bool analyze(std::string input_file,std::string output_file) {
+        if (lexer == nullptr) lexer = std::shared_ptr<Lexer>(new Lexer);
+        std::ifstream ifs(input_file);
+        std::ofstream ofs(output_file);
+        return lexer->_work(ifs,ofs);
+    }
 };
+
+std::shared_ptr<Lexer> Lexer::lexer = nullptr;
