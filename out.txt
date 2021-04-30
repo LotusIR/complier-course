@@ -1,2 +1,12 @@
-Undefined symbol -> _ (line:1:5) 
+(beginsym, begin)
+
+********************************************************
+
+Fatal error in:
+	line 1: "begin_"
+Error type:
+	Undefined symbol -> _ (line:1:5) 
+
+********************************************************
+
 Analyze failed

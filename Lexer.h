@@ -187,10 +187,19 @@ struct Lexer
             }
             if (isIdent) tokens.push_back(token(text,token_type::ident));
             else {
+                ofs << "\n";
+                for (int i = 0; i < s.length()+50; ++i) ofs << "*";
+                ofs << "\n\n";
+                ofs << "Fatal error in:\n\t" << "line " << line << ": \"" << s << "\"\n";
+                ofs << "Error type:\n\t";
                 ofs << "Undefined symbol -> " << text << " (" << "line:" << line << ":" << it-text.length() << ") \n";
+                ofs << "\n";
+                for (int i = 0; i < s.length()+50; ++i) ofs << "*";
+                ofs << "\n\n";
                 return false;
             }
         }
+        ofs << "(" << ty[tokens.back().type] << ", " << tokens.back().text << ")" << std::endl;
         if (it != s.length())
             return getTokens(s, tokens, ofs, line, it);
         else return true;
@@ -204,10 +213,11 @@ struct Lexer
         while (getline(ifs, str))
             ok &= getTokens(str, tokens, ofs, ++line);
         if (ok) {
-            for (auto &t : tokens)
-            {
-                ofs << "(" << ty[t.type] << ", " << t.text << ")" << std::endl;
-            }
+            // for (auto &t : tokens)
+            // {
+            //     ofs << "(" << ty[t.type] << ", " << t.text << ")" << std::endl;
+            // }
+            ofs << "Analyze success\n";
         }
         else {
             ofs << "Analyze failed\n";
