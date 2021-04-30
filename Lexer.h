@@ -2,6 +2,7 @@
 #include <vector>
 #include <unordered_map>
 #include <iostream>
+#include <fstream>
 
 const std::string ty[] = {"beginsym",
                    "callsym",
@@ -82,6 +83,10 @@ struct Lexer
 {
     std::unordered_map<std::string, token_type> type;
 
+    Lexer() {
+        init();
+    }
+
     void init()
     {
         type["begin"] = beginsym;
@@ -117,16 +122,16 @@ struct Lexer
 
     std::vector<token> tokens;
 
-    bool getTokens(std::string &s, std::vector<token> &tokens, int it = 0)
+    bool getTokens(std::string &s, std::vector<token> &tokens, std::ofstream &ofs,int line,int it = 0)
     {
         while (it < s.length() && (s[it] == ' ' || s[it] == '\t') )
             ++it;
         if (it == s.length())
             return true;
         std::string text;
-        if (isalpha(s[it]) || s[it] == '_')
+        if (isalpha(s[it]))
         {
-            while (it < s.length() && (isalpha(s[it]) || isdigit(s[it]) || s[it] == '_'))
+            while (it < s.length() && (isalpha(s[it]) || isdigit(s[it])))
             {
                 text += s[it++];
             }
@@ -176,18 +181,37 @@ struct Lexer
         }
         else {
             bool isIdent = true;
-            if (text[0] != '_' && !isalpha(text[0])) isIdent = false;
+            if (!isalpha(text[0])) isIdent = false;
             for (int i = 1; i < text.length() && isIdent; ++i) { 
-                if (text[i] != '_' && !isalpha(text[i]) && !isdigit(text[i])) isIdent = false;
+                if (!isalpha(text[i]) && !isdigit(text[i])) isIdent = false;
             }
             if (isIdent) tokens.push_back(token(text,token_type::ident));
             else {
-                std::cout << "Undefined symbol -> " << text << '\n';
+                ofs << "Undefined symbol -> " << text << " (" << "line:" << line << ":" << it-text.length() << ") \n";
                 return false;
             }
         }
         if (it != s.length())
-            return getTokens(s, tokens, it);
+            return getTokens(s, tokens, ofs, line, it);
         else return true;
+    }
+
+    bool run(std::ifstream &ifs,std::ofstream &ofs) {
+        std::vector<token> tokens;
+        std::string str;
+        bool ok = true;
+        int line = 0;
+        while (getline(ifs, str))
+            ok &= getTokens(str, tokens, ofs, ++line);
+        if (ok) {
+            for (auto &t : tokens)
+            {
+                ofs << "(" << ty[t.type] << ", " << t.text << ")" << std::endl;
+            }
+        }
+        else {
+            ofs << "Analyze failed\n";
+        }
+        return ok;
     }
 };

@@ -9,21 +9,8 @@ int main()
 {
     ifstream ifs("in.txt");
     ofstream ofs("out.txt");
-    lexer.init();
-    string str;
-    bool ok = true;
-    while (getline(ifs, str))
-        ok &= lexer.getTokens(str, tokens);
-    if (ok) {
-        for (auto &t : tokens)
-        {
-            ofs << "(" << ty[t.type] << ", " << t.text << ")" << endl;
-        }
-    }
-    else {
-        cout << "Analyze failed\n";
-    }
-    cout << "Cleared\n";
+    if (lexer.run(ifs,ofs)) cout << "Cleared!\n";
+    else cout << "Error!\n";
 }
 
 /*
