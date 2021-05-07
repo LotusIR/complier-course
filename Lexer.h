@@ -1,76 +1,10 @@
-#include <string>
 #include <vector>
-#include <unordered_map>
 #include <iostream>
 #include <fstream>
 #include <memory>
+#include "Defination.h"
 
-const std::string ty[] = {"beginsym",
-                   "callsym",
-                   "constsym",
-                   "dosym",
-                   "endsym",
-                   "ifsym",
-                   "oddsym",
-                   "proceduresym",
-                   "readsym",
-                   "thensym",
-                   "varsym",
-                   "whilesym",
-                   "writesym",
-                   "ident",
-                   "number",
-                   "plus",
-                   "minus",
-                   "times",
-                   "slash",
-                   "eql",
-                   "neq",
-                   "lss",
-                   "leq",
-                   "gtr",
-                   "geq",
-                   "becomes",
-                   "lparen",
-                   "rparen",
-                   "comma",
-                   "semicolon",
-                   "period"};
 
-enum token_type
-{
-    beginsym,
-    callsym,
-    constsym,
-    dosym,
-    endsym,
-    ifsym,
-    oddsym,
-    proceduresym,
-    readsym,
-    thensym,
-    varsym,
-    whilesym,
-    writesym,
-    ident,
-    number,
-    plus,
-    minus,
-    times,
-    slash,
-    eql,
-    neq,
-    lss,
-    leq,
-    gtr,
-    geq,
-    becomes,
-    lparen,
-    rparen,
-    comma,
-    semicolon,
-    period
-};
 
 struct token
 {
@@ -82,47 +16,12 @@ struct token
 class Lexer
 {
 private:
-
     static std::shared_ptr<Lexer> lexer;
+    std::vector<token> tokens;
+    Defination def;
+    friend class Grammer;
 
-    std::unordered_map<std::string, token_type> type;
-
-    Lexer() {
-        _init();
-    }
-    
-    void _init()
-    {
-        type["begin"] = beginsym;
-        type["call"] = callsym;
-        type["const"] = constsym;
-        type["do"] = dosym;
-        type["end"] = endsym;
-        type["if"] = ifsym;
-        type["odd"] = oddsym;
-        type["procedure"] = proceduresym;
-        type["read"] = readsym;
-        type["then"] = thensym;
-        type["var"] = varsym;
-        type["while"] = whilesym;
-        type["write"] = writesym;
-        type["+"] = token_type::plus;
-        type["-"] = token_type::minus;
-        type["*"] = times;
-        type["/"] = slash;
-        type["="] = eql;
-        type["#"] = neq;
-        type["<"] = lss;
-        type["<="] = leq;
-        type[">"] = gtr;
-        type[">="] = geq;
-        type[":="] = becomes;
-        type["("] = lparen;
-        type[")"] = rparen;
-        type[","] = comma;
-        type[";"] = semicolon;
-        type["."] = period;
-    }
+    Lexer() {}
 
     bool _getTokens(std::string &s, std::vector<token> &tokens, std::ofstream &ofs,int line,int it = 0)
     {
@@ -171,8 +70,8 @@ private:
                 break;
             }
         }
-        if (type.count(text)) {
-            tokens.push_back(token(text,type[text]));
+        if (def.type.count(text)) {
+            tokens.push_back(token(text,def.type[text]));
         }
         else if (isdigit(text[0]) || (text.length() > 1 && text[0] == '-' && isdigit(text[1]))) {
             tokens.push_back(token(text,token_type::number));
@@ -197,30 +96,33 @@ private:
                 return false;
             }
         }
-        ofs << "(" << ty[tokens.back().type] << ", " << tokens.back().text << ")" << std::endl;
+        ofs << "(" << def.ty[tokens.back().type] << ", " << tokens.back().text << ")" << std::endl;
         if (it != s.length())
             return _getTokens(s, tokens, ofs, line, it);
         else return true;
     }
 
     bool _work(std::ifstream &ifs,std::ofstream &ofs) {
-        std::vector<token> tokens;
         std::string str;
         bool ok = true;
         int line = 0;
         while (ok && getline(ifs, str))
             ok &= _getTokens(str, tokens, ofs, ++line);
         if (ok) {
-            // for (auto &t : tokens)
-            // {
-            //     ofs << "(" << ty[t.type] << ", " << t.text << ")" << std::endl;
-            // }
             ofs << "Analyze success\n";
         }
         else {
             ofs << "Analyze failed\n";
         }
         return ok;
+    }
+
+    static std::vector<token> & getTokens() {
+        return lexer->tokens;
+    }
+
+    static Defination & getDefination() {
+        return lexer->def;
     }
 
 public:
@@ -230,7 +132,7 @@ public:
             if (ch != '.') output_file += ch;
             else break;
         }
-        return analyze(input_file,output_file+"_out.txt");
+        return analyze(input_file,output_file+"_lexer_result.txt");
     }
 
     static bool analyze(std::string input_file,std::string output_file) {
