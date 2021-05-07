@@ -2,23 +2,16 @@
 #include <iostream>
 #include <fstream>
 #include <memory>
-#include "Defination.h"
+#include <thread>
+#include "utils.h"
 
-
-
-struct token
-{
-    std::string text;
-    token_type type;
-    token(std::string _text,token_type _type) : text(_text),type(_type) {}
-    token() {}
-};
 class Lexer
 {
 private:
     static std::shared_ptr<Lexer> lexer;
     std::vector<token> tokens;
     Defination def;
+    friend class Compiler;
     friend class Grammer;
 
     Lexer() {}
@@ -84,15 +77,7 @@ private:
             }
             if (isIdent) tokens.push_back(token(text,token_type::ident));
             else {
-                ofs << "\n";
-                for (int i = 0; i < s.length()+50; ++i) ofs << (i==0||i==s.length()+49?"+":"-");
-                ofs << "\n\n";
-                ofs << "Fatal error in:\n\t" << "line " << line << ": \"" << s << "\"\n";
-                ofs << "Error type:\n\t";
-                ofs << "Undefined symbol -> " << text << " (" << "line:" << line << ":" << it-text.length() << ") \n";
-                ofs << "\n";
-                for (int i = 0; i < s.length()+50; ++i) ofs << (i==0||i==s.length()+49?"+":"-");
-                ofs << "\n\n";
+                utils::err_unex_symbol(ofs,text,s,line,it);
                 return false;
             }
         }

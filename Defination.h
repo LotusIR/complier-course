@@ -1,8 +1,13 @@
 #include <string>
 #include <map>
+#include <vector>
+#include <set>
 
-enum grammer_status {
-    expr,item,factor
+enum grammer_status
+{
+    expr,
+    item,
+    factor
 };
 
 enum token_type
@@ -40,19 +45,28 @@ enum token_type
     period
 };
 
+struct token
+{
+    std::string text;
+    token_type type;
+    token(std::string _text, token_type _type) : text(_text), type(_type) {}
+    token() {}
+};
+
 class Defination
 {
-private:
-    friend class Lexer;
     friend class Grammer;
+    friend class Lexer;
+public:
     std::vector<std::string> ty;
-
     std::map<std::string, token_type> type_enum;
     std::map<std::string, token_type> type;
-    std::map< grammer_status,std::map<token_type,grammer_status> > predict;
-
+    std::map<grammer_status, std::map<token_type, grammer_status>> predict;
+    std::set<grammer_status> received_end;
+private:
     Defination()
     {
+        //token defination
         type["begin"] = beginsym;
         type["call"] = callsym;
         type["const"] = constsym;
@@ -113,36 +127,39 @@ private:
               "comma",
               "semicolon",
               "period"};
-        type_enum = {{"beginsym",beginsym},
-              {"callsym",callsym},
-              {"constsym",constsym},
-              {"dosym",dosym},
-              {"endsym",endsym},
-              {"ifsym",ifsym},
-              {"oddsym",oddsym},
-              {"proceduresym",proceduresym},
-              {"readsym",readsym},
-              {"thensym",thensym},
-              {"varsym",varsym},
-              {"whilesym",whilesym},
-              {"writesym",writesym},
-              {"ident",ident},
-              {"number",number},
-              {"plus",token_type::plus},
-              {"minus",token_type::minus},
-              {"times",times},
-              {"slash",slash},
-              {"eql",eql},
-              {"neq",neq},
-              {"lss",lss},
-              {"leq",leq},
-              {"gtr",gtr},
-              {"geq",geq},
-              {"becomes",becomes},
-              {"lparen",lparen},
-              {"rparen",rparen},
-              {"comma",comma},
-              {"semicolon",semicolon},
-              {"period",period}};
+        type_enum = {{"beginsym", beginsym},
+                     {"callsym", callsym},
+                     {"constsym", constsym},
+                     {"dosym", dosym},
+                     {"endsym", endsym},
+                     {"ifsym", ifsym},
+                     {"oddsym", oddsym},
+                     {"proceduresym", proceduresym},
+                     {"readsym", readsym},
+                     {"thensym", thensym},
+                     {"varsym", varsym},
+                     {"whilesym", whilesym},
+                     {"writesym", writesym},
+                     {"ident", ident},
+                     {"number", number},
+                     {"plus", token_type::plus},
+                     {"minus", token_type::minus},
+                     {"times", times},
+                     {"slash", slash},
+                     {"eql", eql},
+                     {"neq", neq},
+                     {"lss", lss},
+                     {"leq", leq},
+                     {"gtr", gtr},
+                     {"geq", geq},
+                     {"becomes", becomes},
+                     {"lparen", lparen},
+                     {"rparen", rparen},
+                     {"comma", comma},
+                     {"semicolon", semicolon},
+                     {"period", period}};
+        //predict defination
+
+        //received_end defination
     }
 };

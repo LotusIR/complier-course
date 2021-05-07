@@ -5,34 +5,37 @@
 
 class Grammer {
 private:
+    friend class Compiler;
     static std::shared_ptr<Grammer> grammer;
     std::vector<token> &tokens;
     Defination &def;
     grammer_status curStatus;
     Grammer():tokens(Lexer::getTokens()),def(Lexer::getDefination()) {}  
 
-    bool _work(std::ofstream & ofs) {
+    bool _grammer_ok(std::ofstream & ofs) {
         curStatus = grammer_status::expr;
         for (int i = 0; i < tokens.size(); ++i) {
             if (def.predict[expr].count(tokens[i].type)) {
                 curStatus = def.predict[expr][tokens[i].type];
             }
             else {
-                ofs << "\n";
-                for (int j = 0; j < tokens[i].text.length()+100; ++j) ofs << (j==0||j==tokens[i].text.length()+49?"+":"-");
-                ofs << "\n\n";
-                ofs << "Fatal error in:\n\t";
-                ofs << "Error type:\n\t";
-                ofs << "Unexpected token -> " << tokens[i].text << " (token_type: " << def.ty[tokens[i].type] << ") ";
-                if (i == 0) ofs << "at the beginning";
-                else ofs << "after token: " << tokens[i-1].text << " (token_type: " << def.ty[tokens[i-1].type] << ") "; 
-                ofs << "\n";
-                for (int j = 0; j < tokens[i].text.length()+100; ++j) ofs << (j==0||j==tokens[i].text.length()+49?"+":"-");
-                ofs << "\n\n";
+                utils::err_unex_token(ofs,tokens,i,def);
                 return false;
             }
         }
+        if (def.received_end.count(curStatus)) return true;
         return true;
+    }
+
+    bool _work(std::ofstream & ofs) {
+        if (_grammer_ok(ofs)) {
+            ofs << "Analyze success\n";
+            return true;
+        }
+        else {
+            ofs << "Analyze failed\n";
+            return false;
+        }
     }
 
 public:
