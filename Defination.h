@@ -1,5 +1,5 @@
 #include <string>
-#include <unordered_map>
+#include <map>
 
 enum grammer_status {
     expr,item,factor
@@ -47,9 +47,9 @@ private:
     friend class Grammer;
     std::vector<std::string> ty;
 
-    std::unordered_map<std::string, token_type> type_enum;
-    std::unordered_map<std::string, token_type> type;
-    std::unordered_map< grammer_status,std::unordered_map<token_type,grammer_status> > predict;
+    std::map<std::string, token_type> type_enum;
+    std::map<std::string, token_type> type;
+    std::map< grammer_status,std::map<token_type,grammer_status> > predict;
 
     Defination()
     {
