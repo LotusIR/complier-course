@@ -6,9 +6,22 @@
 enum parser_status
 {
     expr,
+    expr_,
     item,
+    item_,
     factor,
-    ok
+    st_plus,
+    st_times,
+    tk_plus,
+    tk_minus,
+    tk_times,
+    tk_slash,
+    tk_ident,
+    tk_number,
+    tk_lparen,
+    tk_rparen,
+    tk_eof,
+    epsilon
 };
 
 enum token_type
@@ -43,7 +56,8 @@ enum token_type
     rparen,
     comma,
     semicolon,
-    period
+    period,
+    end_of_file
 };
 
 struct token
@@ -126,7 +140,8 @@ private:
               "rparen",
               "comma",
               "semicolon",
-              "period"};
+              "period",
+              "end of file"};
         type_enum = {{"beginsym", beginsym},
                      {"callsym", callsym},
                      {"constsym", constsym},
@@ -157,8 +172,48 @@ private:
                      {"rparen", rparen},
                      {"comma", comma},
                      {"semicolon", semicolon},
-                     {"period", period}};
+                     {"period", period},
+                     {"end_of_file",end_of_file}};
         //predict defination
+
+        // predict expr
+        predict[expr][token_type::plus] = {expr_,item,tk_plus};
+        predict[expr][token_type::minus] = {expr_,item,tk_minus};
+        predict[expr][token_type::ident] = {expr_,item};
+        predict[expr][token_type::number] = {expr_,item};
+        predict[expr][token_type::lparen] = {expr_,item};
+
+        //predict expr_
+        predict[expr_][token_type::end_of_file] = {epsilon};
+        predict[expr_][token_type::plus] = {expr_,item,st_plus};
+        predict[expr_][token_type::minus] = {expr_,item,st_plus};
+        predict[expr_][token_type::rparen] = {epsilon};
+
+        //predict item
+        predict[item][token_type::ident] = {item_,factor};
+        predict[item][token_type::number] = {item_,factor};
+        predict[item][token_type::lparen] = {item_,factor};
+
+        //predict item_
+        predict[item_][token_type::end_of_file] = {epsilon};
+        predict[item_][token_type::plus] = {epsilon};
+        predict[item_][token_type::minus] = {epsilon};
+        predict[item_][token_type::rparen] = {epsilon};
+        predict[item_][token_type::times] = {item_,factor,st_times};
+        predict[item_][token_type::slash] = {item_,factor,st_times};
+
+        //predict factor
+        predict[factor][token_type::ident] = {tk_ident};
+        predict[factor][token_type::number] = {tk_number};
+        predict[factor][token_type::lparen] = {tk_rparen,expr,tk_lparen};
+
+        //predict st_plus
+        predict[st_plus][token_type::plus] = {tk_plus};
+        predict[st_plus][token_type::minus] = {tk_minus};
+
+        //predict st_times
+        predict[st_times][token_type::times] = {tk_times};
+        predict[st_times][token_type::slash] = {tk_slash};
 
         // predict[expr][] = {};
     }

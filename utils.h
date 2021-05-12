@@ -32,7 +32,7 @@ namespace utils
         if (i == 0)
             ofs << "at the beginning";
         else
-            ofs << "after token: " << tokens[i - 1].text << " (token_type: " << def.ty[tokens[i - 1].type] << ") ";
+            ofs << "after token: " << tokens[i - 1].text << " (token_type: " << def.ty[tokens[i - 1].type] << ") \n";
         print_sepline(ofs,tokens[i].text.length() + 100);
     }
 

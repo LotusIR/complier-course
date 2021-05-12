@@ -1,6 +1,6 @@
 #include <memory>
 #include <string>
-#include "Grammer.h"
+#include "Parser.h"
 #include <iostream>
 
 class Compiler{
@@ -11,11 +11,11 @@ public:
             return false;
         }
         else std::cout << "Lexer analyze success\n";
-        if (!Grammer::analyze(input_file)) {
-            std::cout << "Grammer analyze failed\n";
+        if (!Parser::analyze(input_file)) {
+            std::cout << "Parser analyze failed\n";
             return false;
         }
-        else std::cout << "Grammer analyze success\n";
+        else std::cout << "Parser analyze success\n";
         return true;
     }
 };

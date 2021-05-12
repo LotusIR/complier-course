@@ -32,7 +32,7 @@ private:
             for (auto &ch : text)
                 ch = tolower(ch);
         }
-        else if (tokens.back().type != ident && tokens.back().type != number && s[it] == '-' && isdigit(s[it+1]) ) {
+        else if (!tokens.empty() && tokens.back().type != ident && tokens.back().type != number && s[it] == '-' && isdigit(s[it+1]) ) {
             text += s[it++];
             while (it < s.length() && isdigit(s[it]))
             {
@@ -77,7 +77,7 @@ private:
             }
             if (isIdent) tokens.push_back(token(text,token_type::ident));
             else {
-                utils::err_unex_symbol(ofs,text,s,line,it);
+                // utils::err_unex_symbol(ofs,text,s,line,it);
                 return false;
             }
         }
@@ -93,6 +93,7 @@ private:
         int line = 0;
         while (ok && getline(ifs, str))
             ok &= _getTokens(str, tokens, ofs, ++line);
+        tokens.push_back(token("#",end_of_file));
         if (ok) {
             ofs << "Analyze success\n";
         }
