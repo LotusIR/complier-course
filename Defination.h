@@ -3,11 +3,12 @@
 #include <vector>
 #include <set>
 
-enum grammer_status
+enum parser_status
 {
     expr,
     item,
-    factor
+    factor,
+    ok
 };
 
 enum token_type
@@ -55,14 +56,13 @@ struct token
 
 class Defination
 {
-    friend class Grammer;
+    friend class Parser;
     friend class Lexer;
 public:
     std::vector<std::string> ty;
     std::map<std::string, token_type> type_enum;
     std::map<std::string, token_type> type;
-    std::map<grammer_status, std::map<token_type, grammer_status>> predict;
-    std::set<grammer_status> received_end;
+    std::map<parser_status, std::map<token_type, std::vector<parser_status> >> predict;
 private:
     Defination()
     {
@@ -160,6 +160,6 @@ private:
                      {"period", period}};
         //predict defination
 
-        //received_end defination
+        // predict[expr][] = {};
     }
 };

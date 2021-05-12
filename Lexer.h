@@ -12,7 +12,7 @@ private:
     std::vector<token> tokens;
     Defination def;
     friend class Compiler;
-    friend class Grammer;
+    friend class Parser;
 
     Lexer() {}
 
