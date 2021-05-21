@@ -23,7 +23,7 @@ namespace utils
         print_sepline(ofs,s.length()+50);
     }
 
-    void err_unex_token(std::ofstream &ofs, std::vector<token> &tokens, int i, Defination &def)
+    void err_unex_token(std::ofstream &ofs, std::vector<token> &tokens, int i, Defination &def,const std::string & expt = "")
     {
         print_sepline(ofs,tokens[i].text.length() + 100);
         ofs << "Fatal error:\n\t";
@@ -33,6 +33,7 @@ namespace utils
             ofs << "at the beginning";
         else
             ofs << "after token: " << tokens[i - 1].text << " (token_type: " << def.ty[tokens[i - 1].type] << ") \n";
+        if (expt != "") ofs << "\tExpected token -> " << expt << '\n';
         print_sepline(ofs,tokens[i].text.length() + 100);
     }
 

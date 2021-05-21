@@ -66,6 +66,10 @@ struct token
     token_type type;
     token(std::string _text, token_type _type) : text(_text), type(_type) {}
     token() {}
+    friend std::ostream & operator << (std::ostream & os,const token & tk) {
+        os << tk.type << " " << tk.text;
+        return os;
+    }
 };
 
 class Defination

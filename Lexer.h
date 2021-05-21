@@ -77,7 +77,7 @@ private:
             }
             if (isIdent) tokens.push_back(token(text,token_type::ident));
             else {
-                // utils::err_unex_symbol(ofs,text,s,line,it);
+                utils::err_unex_symbol(ofs,text,s,line,it);
                 return false;
             }
         }
@@ -126,6 +126,14 @@ public:
         std::ifstream ifs(input_file);
         std::ofstream ofs(output_file);
         return lexer->_work(ifs,ofs);
+    }
+
+    static std::vector<token> & getVtoken() {
+        return lexer->tokens;
+    }
+
+    static Defination & getDef() {
+        return lexer->def;
     }
 };
 

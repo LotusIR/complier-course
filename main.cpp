@@ -2,5 +2,8 @@
 #include "Compiler.h"
 
 int main() {
-    Compiler::compile("in.txt");
+    AstNode * root = Compiler::compile("in.txt");
+    if (root) {
+        std::cout << root->calc() << '\n';
+    }
 }
