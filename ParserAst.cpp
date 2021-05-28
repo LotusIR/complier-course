@@ -60,7 +60,7 @@ class IdentAstNode: public AstNode  {
 			cout << "-Ident: " << identName << '\n';
 		}
 		virtual int calc() {
-			cout << "error ident\n";
+			cout << "Undefined ident: " << identName << "(calculated as 0)\n";
 			return 0;
 		}
 		virtual string gen(vector<string> &quards,int &tot) {
