@@ -5,6 +5,16 @@ using namespace std;
 
 const int layer_inc = 4;
 
+string itoa(int x) {
+	string res;
+	while (x) {
+		res += '0' + x%10;
+		x /= 10;
+	}
+	reverse(res.begin(),res.end());
+	return res;
+}
+
 class AstNode {
 public:
 	virtual void print(int layer = 0) {
@@ -13,8 +23,13 @@ public:
 	
 	virtual int calc() {
 		return INT32_MIN;
-	};
+	}
+
+	virtual string gen(vector<string> &quards,int &tot) {
+		return "t"+itoa(tot);
+	}
 };
+
 
 class NumberAstNode: public AstNode  {
 	public:
@@ -28,6 +43,9 @@ class NumberAstNode: public AstNode  {
 		}
 		virtual int calc() {
 			return value;
+		}
+		virtual string gen(vector<string> &quards,int &tot) {
+			return itoa(value);
 		}
 }; 
 
@@ -44,6 +62,9 @@ class IdentAstNode: public AstNode  {
 		virtual int calc() {
 			cout << "error ident\n";
 			return 0;
+		}
+		virtual string gen(vector<string> &quards,int &tot) {
+			return identName;
 		}
 };
 
@@ -68,6 +89,14 @@ class UniopAstNode: public AstNode  {
 					return -child->calc();
 			}
 			return 0;
+		}
+
+		virtual string gen(vector<string> &quards,int &tot) {
+			string cName = child->gen(quards,tot);
+			string curName = "t"+itoa(++tot);
+			string str = "("+op+","+"0"+","+cName+","+curName+")";
+			quards.push_back(str);
+			return curName;
 		}
 
 		~UniopAstNode() {
@@ -108,6 +137,14 @@ class BinopAstNode: public AstNode  {
 			return 0;
 		}
 
+		virtual string gen(vector<string> &quards,int &tot) {
+			string lname = lchild->gen(quards,tot);
+			string rname = rchild->gen(quards,tot);
+			string curName = "t"+itoa(++tot);
+			string str = "("+op+","+lname+","+rname+","+curName+")";
+			quards.push_back(str);
+			return curName;
+		}
 
 		~BinopAstNode() {
 			delete lchild;
