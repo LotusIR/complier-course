@@ -2,12 +2,8 @@
 #include "Compiler.h"
 
 int main() {
-<<<<<<< Updated upstream
     freopen("in_AST_result.txt","w",stdout);
     AstNode * root = Compiler::compile("in.txt");
-=======
-    AstNode * root = Compiler::compile("in4.txt");
->>>>>>> Stashed changes
     if (root) {
         root->print();
         std::cout << root->calc() << '\n';
