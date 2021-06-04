@@ -94,7 +94,13 @@ class UniopAstNode: public AstNode  {
 		virtual string gen(vector<string> &quards,int &tot) {
 			string cName = child->gen(quards,tot);
 			string curName = "t"+itoa(++tot);
-			string str = "("+op+","+"0"+","+cName+","+curName+")";
+			string str;
+			if (op == "+") {
+				str =  "(:=,+" + cName + ",_," + curName + ")";
+			}
+			else {
+				str =  "(:=,-" + cName + ",_," + curName + ")";
+			}
 			quards.push_back(str);
 			return curName;
 		}
@@ -166,6 +172,14 @@ public:
 		cout << _type << " " << _msg << '\n';
 	}
 };
+
+vector<string> qgen(AstNode * root) {
+	vector<std::string> res;
+    int tot = 0;
+    root->gen(res,tot);
+    if (res.empty()) res.push_back(root->gen(res,tot));
+	return res;
+}
 
 class RecursiveDecsentParser {
 public:

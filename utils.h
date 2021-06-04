@@ -5,7 +5,7 @@
 namespace utils
 {
 
-    void print_sepline(std::ofstream &ofs, int len) {
+    void print_sepline(std::ostream &ofs, int len) {
         ofs << "\n";
         for (int i = 0; i < len; ++i)
             ofs << (i == 0 || i == len-1 ? "+" : "-");
