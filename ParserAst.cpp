@@ -45,7 +45,10 @@ class NumberAstNode: public AstNode  {
 			return value;
 		}
 		virtual string gen(vector<string> &quards,int &tot) {
-			return itoa(value);
+			string curName = "t" + itoa(++tot);
+			string str = "(:=,"+itoa(value)+",_,"+curName+")";
+			quards.push_back(str);
+			return curName;
 		}
 }; 
 
@@ -64,6 +67,9 @@ class IdentAstNode: public AstNode  {
 			return 0;
 		}
 		virtual string gen(vector<string> &quards,int &tot) {
+			// string curName = "t" + itoa(++tot);
+			// string str = "(:=,"+identName+",_,"+curName+")";
+			// quards.push_back(str);
 			return identName;
 		}
 };
@@ -174,10 +180,14 @@ public:
 };
 
 vector<string> qgen(AstNode * root) {
-	vector<std::string> res;
+	vector<string> res;
     int tot = 0;
     root->gen(res,tot);
-    if (res.empty()) res.push_back(root->gen(res,tot));
+	if (res.empty()) {
+		string identName = root->gen(res,tot);
+		string str = "(:=,"+identName+",_,"+"t1)";
+		res.push_back(str);
+	}
 	return res;
 }
 
