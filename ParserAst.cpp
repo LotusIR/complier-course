@@ -102,7 +102,7 @@ class UniopAstNode: public AstNode  {
 			string curName = "t"+itoa(++tot);
 			string str;
 			if (op == "+") {
-				str =  "(:=," + cName + ",_," + curName + ")";
+				return cName;
 			}
 			else {
 				str =  "(:=,-" + cName + ",_," + curName + ")";
